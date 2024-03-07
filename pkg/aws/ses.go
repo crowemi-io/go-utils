@@ -19,7 +19,7 @@ type SesClient struct {
 	Email       Email
 }
 
-// Email is used to unmarshal json values, comments
+// Email is used to unmarshal json values
 type Email struct {
 	FromAddress    string    `json:"from_address"`
 	ReplyToAddress string    `json:"reply_to_address"`
