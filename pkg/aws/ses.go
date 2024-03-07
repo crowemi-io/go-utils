@@ -10,20 +10,24 @@ const CharSet = "UTF-8"
 
 // SesClient is a wrapper for aws.SES with methods for sending an email
 type SesClient struct {
-	Client         Client
-	SesClient      *ses.SES
-	destination    *ses.Destination
-	message        *ses.Message
-	body           *ses.Body
-	subject        *ses.Content
-	FromAddress    string
-	ReplyToAddress string
-	ToAddresses    []*string
-	CcAddresses    []*string
-	BccAddresses   []*string
-	Subject        string
-	HtmlBody       string
-	TextBody       string
+	Client      Client
+	SesClient   *ses.SES
+	destination *ses.Destination
+	message     *ses.Message
+	body        *ses.Body
+	subject     *ses.Content
+	Email       Email
+}
+
+type Email struct {
+	FromAddress    string    `json:"from_address"`
+	ReplyToAddress string    `json:"reply_to_address"`
+	ToAddresses    []*string `json:"to_addresses"`
+	CcAddresses    []*string `json:"cc_addresses"`
+	BccAddresses   []*string `json:"bcc_addresses"`
+	Subject        string    `json:"subject"`
+	HtmlBody       string    `json:"html_body"`
+	TextBody       string    `json:"text_body"`
 }
 
 func (s *SesClient) CreateSesClient() *ses.SES {
@@ -41,36 +45,36 @@ func (s *SesClient) AddDestination(DestinationTo []string, DestinationBcc []stri
 
 // SetFromAddress adds a sender to the email.
 func (s *SesClient) SetFromAddress(sender string) {
-	s.FromAddress = sender
+	s.Email.FromAddress = sender
 }
 
 // SetSubject adds a subject to the email.
 func (s *SesClient) SetSubject(subject string) {
-	s.Subject = subject
+	s.Email.Subject = subject
 }
 
 func (s *SesClient) AddDestinationBcc(addresses []string) {
 	for _, v := range addresses {
-		s.BccAddresses = append(s.BccAddresses, &v)
+		s.Email.BccAddresses = append(s.Email.BccAddresses, &v)
 	}
 }
 func (s *SesClient) AddDestinationCc(addresses []string) {
 	for _, v := range addresses {
-		s.CcAddresses = append(s.CcAddresses, &v)
+		s.Email.CcAddresses = append(s.Email.CcAddresses, &v)
 	}
 }
 func (s *SesClient) AddDestinationTo(addresses []string) {
 	for _, v := range addresses {
-		s.ToAddresses = append(s.ToAddresses, &v)
+		s.Email.ToAddresses = append(s.Email.ToAddresses, &v)
 	}
 }
 
 // CreateDestination creates and returns an AWS destination object while assigning it to the SesClient.
 func (s *SesClient) CreateDestination() ses.Destination {
 	destination := ses.Destination{
-		ToAddresses:  s.ToAddresses,
-		CcAddresses:  s.CcAddresses,
-		BccAddresses: s.BccAddresses,
+		ToAddresses:  s.Email.ToAddresses,
+		CcAddresses:  s.Email.CcAddresses,
+		BccAddresses: s.Email.BccAddresses,
 	}
 	s.destination = &destination
 	return destination
@@ -81,16 +85,16 @@ func (s *SesClient) CreateMessage() ses.Message {
 	body := ses.Body{
 		Html: &ses.Content{
 			Charset: aws.String(CharSet),
-			Data:    aws.String(s.HtmlBody),
+			Data:    aws.String(s.Email.HtmlBody),
 		},
 		Text: &ses.Content{
 			Charset: aws.String(CharSet),
-			Data:    aws.String(s.TextBody),
+			Data:    aws.String(s.Email.TextBody),
 		},
 	}
 	subject := ses.Content{
 		Charset: aws.String(CharSet),
-		Data:    aws.String(s.Subject),
+		Data:    aws.String(s.Email.Subject),
 	}
 	message := ses.Message{
 		Body:    &body,
@@ -112,7 +116,7 @@ func (s *SesClient) CreateSendEmailInput() ses.SendEmailInput {
 
 	sendEmailInput.Destination = &destination
 	sendEmailInput.Message = &message
-	sendEmailInput.Source = &s.FromAddress
+	sendEmailInput.Source = &s.Email.FromAddress
 
 	return sendEmailInput
 
