@@ -16,11 +16,11 @@ type SesClient struct {
 	message     *ses.Message
 	body        *ses.Body
 	subject     *ses.Content
-	Email       Email
+	Email       EmailContent
 }
 
 // Email is used to unmarshal json values
-type Email struct {
+type EmailContent struct {
 	FromAddress    string    `json:"from_address"`
 	ReplyToAddress string    `json:"reply_to_address"`
 	ToAddresses    []*string `json:"to_addresses"`
