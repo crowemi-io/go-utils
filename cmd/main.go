@@ -14,11 +14,13 @@ func main() {
 		Client: aws.Client{
 			Session: aws.CreateSession("us-west-2"),
 		},
-		FromAddress:    "hello@crowemi.com",
-		ReplyToAddress: "no-reply@crowemi.com",
-		Subject:        "Hello World!",
-		HtmlBody:       "<h1>Hello World! From GoLang!</h1>",
-		TextBody:       "Hello World! From GoLang!",
+		Email: aws.EmailContent{
+			FromAddress:    "hello@crowemi.com",
+			ReplyToAddress: "no-reply@crowemi.com",
+			Subject:        "Hello World!",
+			HtmlBody:       "<h1>Hello World! From GoLang!</h1>",
+			TextBody:       "Hello World! From GoLang!",
+		},
 	}
 	s.AddDestinationTo(toAddresses)
 
