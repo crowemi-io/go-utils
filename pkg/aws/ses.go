@@ -19,16 +19,16 @@ type SesClient struct {
 	Email       EmailContent
 }
 
-// Email is used to unmarshal json values
+// EmailContent is bound to ts-utils EmailContent (url: )
 type EmailContent struct {
-	FromAddress    string    `json:"from_address"`
-	ReplyToAddress string    `json:"reply_to_address"`
-	ToAddresses    []*string `json:"to_addresses"`
-	CcAddresses    []*string `json:"cc_addresses"`
-	BccAddresses   []*string `json:"bcc_addresses"`
-	Subject        string    `json:"subject"`
-	HtmlBody       string    `json:"html_body"`
-	TextBody       string    `json:"text_body"`
+	FromAddress    string
+	ReplyToAddress string
+	ToAddresses    []*string
+	CcAddresses    []*string
+	BccAddresses   []*string
+	Subject        string
+	HtmlBody       string
+	TextBody       string
 }
 
 func (s *SesClient) CreateSesClient() *ses.SES {
